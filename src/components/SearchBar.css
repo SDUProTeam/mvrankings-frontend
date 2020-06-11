@@ -1,0 +1,24 @@
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.range-input {
+    text-align: center;
+}
+
+@media (min-width: 576px) {
+    
+}
+
+@media (min-width: 768px) {
+
+}
+
+@media (min-width: 992px) {
+
+}
+
+@media (min-width: 1200px) {
+    
+}
