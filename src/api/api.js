@@ -24,15 +24,15 @@ export function search(data, order, offset, mode, callback) {
     })
 }
 
-export function movieDetail(id) {
+export function movieDetail(id, callback) {
     request({
-        url: '/api/movie/movie_id',
+        url: '/api/movie',
         method: 'get',
         data: {
-            id: id
+            sourceId: id
         }
     }).then(res => {
-        console.log(res)
+        callback(res)
     })
 }
 

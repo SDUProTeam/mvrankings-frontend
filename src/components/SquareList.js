@@ -8,6 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom'
+import MovieRate from './MovieRate'
 
 const useStyles = makeStyles((theme) => ({
     cover: {
@@ -43,21 +44,6 @@ const useStyles = makeStyles((theme) => ({
         color: 'rgba(0, 0, 0, 0.87)',
         margin: 'auto'
     },
-    rate: {
-        textAlign: "center",
-        width: 160,
-        color: 'orange',
-        fontStyle: 'italic',
-        textDecoration: 'none',
-        margin: 'auto'
-    },
-    mobileRate: {
-        textAlign: "center",
-        color: 'orange',
-        fontStyle: 'italic',
-        textDecoration: 'none',
-        margin: 0
-    },
     hoverRate: {
         textAlign: "center",
         width: 160,
@@ -65,12 +51,6 @@ const useStyles = makeStyles((theme) => ({
         fontStyle: 'italic',
         textDecoration: 'none',
         margin: 'auto'
-    },
-    int: {
-        fontSize: '24px'
-    },
-    frac: {
-        fontSize: '20px'
     },
     desktop: {
         [theme.breakpoints.down('sm')]: {
@@ -83,24 +63,6 @@ const useStyles = makeStyles((theme) => ({
         },
     }
 }));
-
-function MovieRate(props) {
-    const classes = useStyles()
-
-    if (props.rate === '') {
-        return (<></>)
-    }
-
-    let intv = props.rate.split('.')[0]
-    let frac = props.rate.split('.')[1] ?? 0
-
-    return (
-        <div className={(props.mobile ?? false) ? classes.mobileRate : classes.rate}>
-            <span className={classes.int}>{intv}</span>
-            <span className={classes.frac}>.{frac}</span>
-        </div>
-    )
-}
 
 const movieSource = {
     'mtime': '时光网',
@@ -176,7 +138,7 @@ class CardItem extends React.Component {
         const float = this.state.hover ? (
             <div style={{ zIndex: 1300, position: 'absolute', transform: 'translateX(-40px)' }} 
                 onMouseLeave={this.requestQuit} onMouseEnter={() => {}}>
-                <Link className={classes.hoverCover} to={'/detail/' + item.sourceId}>
+                <Link className={classes.hoverCover} to={'/detail/' + item.sourceId} target="_blank">
                     <Card className={classes.hoverCard}>
                         <CardActionArea>
                             <CardMedia
@@ -213,7 +175,7 @@ class CardItem extends React.Component {
             <Grid item>
                 {float}
                 <div>
-                    <Link className={classes.hoverCover} to={'/detail/' + item.sourceId}>
+                    <Link className={classes.hoverCover} to={'/detail/' + item.sourceId} target="_blank">
                         <CardMedia
                             component="img"
                             image={item.cover}
@@ -236,7 +198,7 @@ function MobileCardItem(props) {
     
     return (
         <Grid item xs={12} sm={12}>
-            <Link style={{ textDecoration: 'none' }} to={'/detail/' + item.sourceId}>
+            <Link style={{ textDecoration: 'none' }} to={'/detail/' + item.sourceId} target="_blank">
                 <Card className={classes.mobileCard}>
                     <CardActionArea>
                         <div style={{ display: 'flex' }}>

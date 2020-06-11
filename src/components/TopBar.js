@@ -22,7 +22,11 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    display: "flex"
+  },
+  colRoot: {
+    display: 'flex',
+    flexDirection: 'column'
   },
   drawer: {
     [theme.breakpoints.up("md")]: {
@@ -38,6 +42,14 @@ const useStyles = makeStyles((theme) => ({
   },
   subAppBar: {
     width: "100%",
+  },
+  below: {
+    width: '100%',
+    paddingTop: '64px',
+    overflow: 'hidden',
+    [theme.breakpoints.down('xs')]: {
+      paddingTop: '56px'
+    }
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -63,6 +75,13 @@ const useStyles = makeStyles((theme) => ({
         window.innerWidth - document.body.clientWidth
       }px)`,
     },
+  },
+  subBarContent: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    maxWidth: `calc(100% - ${
+      window.innerWidth - document.body.clientWidth
+    }px)`,
   },
 }));
 
@@ -161,7 +180,7 @@ function ResponsiveDrawer(props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        {props.child}
+        {props.children}
       </main>
     </div>
   );
@@ -182,7 +201,7 @@ export function SubTopBar(props) {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.colRoot}>
       <CssBaseline />
       <AppBar position="fixed" className={classes.subAppBar}>
         <Toolbar>
@@ -200,9 +219,12 @@ export function SubTopBar(props) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {props.child}
+      <div className={classes.below}>
+        {props.below}
+      </div>
+      <main className={classes.subBarContent}>
+        {props.below ? <></> : <div className={classes.toolbar} />}
+        {props.children}
       </main>
     </div>
   );
