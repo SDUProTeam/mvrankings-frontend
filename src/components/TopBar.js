@@ -82,6 +82,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: `calc(100% - ${
       window.innerWidth - document.body.clientWidth
     }px)`,
+    backgroundColor: 'white'
   },
 }));
 

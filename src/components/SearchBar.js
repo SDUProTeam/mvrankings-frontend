@@ -609,8 +609,10 @@ export default class SearchBar extends React.Component {
         break;
       case "writers":
         tmpData.writers = value;
+        break;
       case "country":
         tmpData.country = value;
+        break;
       default:
         break;
     }
