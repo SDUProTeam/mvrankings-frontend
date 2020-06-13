@@ -124,12 +124,12 @@ class DetailPage extends React.Component {
 
   buildInfoBlock(title, child) {
     return (
-      <div className="paper">
+      <Grid item xs={12}>
         <Typography variant="h6" gutterBottom>{title}</Typography>
-        <Grid container spacing={4} style={{ marginTop: 12 }}>
+        <Grid container spacing={4}>
           {child}
         </Grid>
-      </div>
+      </Grid>
     )
   }
 
@@ -149,48 +149,52 @@ class DetailPage extends React.Component {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} md={8} lg={8} xl={9}>
-          {this.buildInfoBlock('影片简介', (
-            <Grid item>
-              <Typography color="textSecondary" variant="body1" component="p">
-                {item.summary}
-              </Typography>
-            </Grid>
-          ))}
-          <Divider />
-          {this.buildInfoBlock('影片信息', (
-            <>
-              {this.buildInfoLine("影片名称", item.name ?? "")}
-              {this.buildInfoLine("外文名称", item.nameFrn ?? "")}
-              {this.buildInfoLine(
-                "评分",
-                `${item.rating ?? 0} (${item.rateNum ?? 0}次)`
-              )}
-              {this.buildInfoLine(
-                "数据来源",
-                `${movieSourcesE2C[item.source ?? ""] ?? ""}`
-              )}
-              {this.buildInfoLine("类型", (item.types ?? []).join(" / "))}
-              {this.buildInfoLine("区域", (item.country ?? []).join(" / "))}
-              {this.buildInfoLine("片长", item.runtime ?? "")}
-              {this.buildInfoLine("上映日期", (item.releaseDate ?? []).join(" / "))}
-              {this.buildInfoLine("语言", (item.language ?? []).join(" / "))}
-              {item.imdb === undefined
-                ? this.buildInfoLine("IMDb链接", "")
-                : this.buildInfoLink(
-                    "IMDb链接",
-                    `tt${item.imdb}`,
-                    `https://www.imdb.com/title/tt${item.imdb}/?ref_=nv_sr_srsg_0`
-                  )}
-            </>
-          ))}
-          <Divider />
-          {this.buildInfoBlock('演职人员', (
-            <>
-              {this.buildSubInfoBlock('主演', (item.stars ?? []).join(" / "))}
-              {this.buildSubInfoBlock('导演', (item.directors ?? []).join(" / "))}
-              {this.buildSubInfoBlock('编剧', (item.writers ?? []).join(" / "))}
-            </>
-          ))}
+
+          <Grid container spacing={4}>
+            {this.buildInfoBlock('影片简介', (
+              <Grid item>
+                <Typography color="textSecondary" variant="body1" component="p">
+                  {item.summary}
+                </Typography>
+              </Grid>
+            ))}
+            <Grid item xs={12}><Divider/></Grid>
+            {this.buildInfoBlock('影片信息', (
+              <>
+                {this.buildInfoLine("影片名称", item.name ?? "")}
+                {this.buildInfoLine("外文名称", item.nameFrn ?? "")}
+                {this.buildInfoLine(
+                  "评分",
+                  `${item.rating ?? 0} (${item.rateNum ?? 0}次)`
+                )}
+                {this.buildInfoLine(
+                  "数据来源",
+                  `${movieSourcesE2C[item.source ?? ""] ?? ""}`
+                )}
+                {this.buildInfoLine("类型", (item.types ?? []).join(" / "))}
+                {this.buildInfoLine("区域", (item.country ?? []).join(" / "))}
+                {this.buildInfoLine("片长", item.runtime ?? "")}
+                {this.buildInfoLine("上映日期", (item.releaseDate ?? []).join(" / "))}
+                {this.buildInfoLine("语言", (item.language ?? []).join(" / "))}
+                {item.imdb === undefined
+                  ? this.buildInfoLine("IMDb链接", "")
+                  : this.buildInfoLink(
+                      "IMDb链接",
+                      `tt${item.imdb}`,
+                      `https://www.imdb.com/title/tt${item.imdb}/?ref_=nv_sr_srsg_0`
+                    )}
+              </>
+            ))}
+            <Grid item xs={12}><Divider/></Grid>
+            {this.buildInfoBlock('演职人员', (
+              <>
+                {this.buildSubInfoBlock('主演', (item.stars ?? []).join(" / "))}
+                {this.buildSubInfoBlock('导演', (item.directors ?? []).join(" / "))}
+                {this.buildSubInfoBlock('编剧', (item.writers ?? []).join(" / "))}
+              </>
+            ))}
+          </Grid>
+          
         </Grid>
         <Grid item xs={12} sm={12} md={4} lg={4} xl={3}>
           <Paper className="paper">
