@@ -59,6 +59,10 @@
     text-align: right;
 }
 
+p {
+    word-break: break-all;
+}
+
 @media (max-width: 600px) {
     .headForeground {
         position: absolute;
