@@ -36,6 +36,18 @@ export function movieDetail(id, callback) {
     })
 }
 
+export function movieComments(id, callback) {
+    request({
+        url: '/api/comments',
+        method: 'get',
+        data: {
+            sourceId: id
+        }
+    }).then(res => {
+        callback(res)
+    })
+}
+
 export function recommendMovies() {
 
 }

@@ -1,9 +1,16 @@
 import React from "react";
 import { withRouter, Link } from "react-router-dom";
 import { SubTopBar } from "../components/TopBar";
-import { movieDetail } from "../api/api";
+import { movieDetail, movieComments } from "../api/api";
 import "./Detail.css";
-import { Typography, makeStyles, Grid, Paper, Divider } from "@material-ui/core";
+import {
+  Typography,
+  makeStyles,
+  Grid,
+  Paper,
+  Divider,
+} from "@material-ui/core";
+import { Rating } from '@material-ui/lab'
 import MovieRate from "../components/MovieRate";
 
 const movieSourcesE2C = {
@@ -21,26 +28,29 @@ class DetailPage extends React.Component {
       data: {},
     };
 
-    this.buildChild = this.buildChild.bind(this)
+    this.buildChild = this.buildChild.bind(this);
+    this.buildComment = this.buildComment.bind(this);
   }
 
   componentDidMount() {
     // Get detail
     movieDetail(this.props.match.params.id, (res) => {
+      console.log( res.err !== undefined);
+      
       this.setState({
-        fail: res instanceof Error,
+        fail: res.err !== undefined,
         loading: false,
-        data: this.preHandleData(res.data[0]),
+        data: this.preHandleData((res.data ?? [{}])[0]),
       });
     });
   }
 
   preHandleData(data) {
-    const tmp = {...data}
-    if (tmp.runtime && tmp.runtime.match('[0-9]*[0-9]$')) {
-      tmp.runtime = tmp.runtime + '分钟'
+    const tmp = { ...data };
+    if (tmp.runtime && tmp.runtime.match("[0-9]*[0-9]$")) {
+      tmp.runtime = tmp.runtime + "分钟";
     }
-    return tmp
+    return tmp;
   }
 
   buildBelow() {
@@ -93,11 +103,21 @@ class DetailPage extends React.Component {
   buildInfoLine(key, value) {
     return (
       <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
-        <div style={{ display: 'flex' }}>
-          <Typography className="info-key" color="textSecondary" variant="subtitle1" component="span">
+        <div style={{ display: "flex" }}>
+          <Typography
+            className="info-key"
+            color="textSecondary"
+            variant="subtitle1"
+            component="span"
+          >
             {key}
           </Typography>
-          <Typography className="info-value" color="textPrimary" variant="body1" component="span">
+          <Typography
+            className="info-value"
+            color="textPrimary"
+            variant="body1"
+            component="span"
+          >
             {value}
           </Typography>
         </div>
@@ -108,13 +128,27 @@ class DetailPage extends React.Component {
   buildInfoLink(key, value, link) {
     return (
       <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
-        <div style={{ display: 'flex' }}>
-          <Typography className="info-key" color="textSecondary" variant="subtitle1" component="span">
+        <div style={{ display: "flex" }}>
+          <Typography
+            className="info-key"
+            color="textSecondary"
+            variant="subtitle1"
+            component="span"
+          >
             {key}
           </Typography>
-          <Typography className="info-value" color="textPrimary" variant="body1" component="span">
-            <a href={link} target="_blank" style={{ textDecoration: "none", color: 'inherit' }}>
-                {value}
+          <Typography
+            className="info-value"
+            color="textPrimary"
+            variant="body1"
+            component="span"
+          >
+            <a
+              href={link}
+              target="_blank"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              {value}
             </a>
           </Typography>
         </div>
@@ -125,23 +159,60 @@ class DetailPage extends React.Component {
   buildInfoBlock(title, child) {
     return (
       <Grid item xs={12}>
-        <Typography variant="h6" gutterBottom>{title}</Typography>
+        <Typography variant="h6" gutterBottom>
+          {title}
+        </Typography>
         <Grid container spacing={4}>
           {child}
         </Grid>
       </Grid>
-    )
+    );
   }
 
   buildSubInfoBlock(title, text) {
     return (
       <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
         <div>
-          <Typography variant="subtitle1" gutterBottom>{title}</Typography>
-          <Typography variant="body1" color="textSecondary">{text}</Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            {title}
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            {text}
+          </Typography>
         </div>
       </Grid>
-    )
+    );
+  }
+
+  buildCommentBlock(user, time, comment, rating) {
+    return (
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <div>
+          <Typography variant="subtitle1" component="span" gutterBottom>
+            {user}
+          </Typography>
+          <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
+            <Rating precision={0.1} size="small" value={rating / 2} readOnly/>
+            <div style={{ width: 8 }}></div>
+            <Typography variant="subtitle2" component="span" color="textSecondary">
+              {time.split(' ')[0]}
+            </Typography>
+          </div>
+          
+          <Typography variant="body1" color="textSecondary">
+            {comment}
+          </Typography>
+        </div>
+      </Grid>
+    );
+  }
+
+  buildComment(item) {
+    console.log(item);
+    
+    return <>
+      {this.buildCommentBlock(item.user, item.time, item.content, item.rating)}
+    </>;
   }
 
   buildChild() {
@@ -149,17 +220,20 @@ class DetailPage extends React.Component {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} md={8} lg={8} xl={9}>
-
           <Grid container spacing={4}>
-            {this.buildInfoBlock('影片简介', (
+            {this.buildInfoBlock(
+              "影片简介",
               <Grid item>
                 <Typography color="textSecondary" variant="body1" component="p">
                   {item.summary}
                 </Typography>
               </Grid>
-            ))}
-            <Grid item xs={12}><Divider/></Grid>
-            {this.buildInfoBlock('影片信息', (
+            )}
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            {this.buildInfoBlock(
+              "影片信息",
               <>
                 {this.buildInfoLine("影片名称", item.name ?? "")}
                 {this.buildInfoLine("外文名称", item.nameFrn ?? "")}
@@ -174,7 +248,10 @@ class DetailPage extends React.Component {
                 {this.buildInfoLine("类型", (item.types ?? []).join(" / "))}
                 {this.buildInfoLine("区域", (item.country ?? []).join(" / "))}
                 {this.buildInfoLine("片长", item.runtime ?? "")}
-                {this.buildInfoLine("上映日期", (item.releaseDate ?? []).join(" / "))}
+                {this.buildInfoLine(
+                  "上映日期",
+                  (item.releaseDate ?? []).join(" / ")
+                )}
                 {this.buildInfoLine("语言", (item.language ?? []).join(" / "))}
                 {item.imdb === undefined
                   ? this.buildInfoLine("IMDb链接", "")
@@ -184,17 +261,41 @@ class DetailPage extends React.Component {
                       `https://www.imdb.com/title/tt${item.imdb}/?ref_=nv_sr_srsg_0`
                     )}
               </>
-            ))}
-            <Grid item xs={12}><Divider/></Grid>
-            {this.buildInfoBlock('演职人员', (
+            )}
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            {this.buildInfoBlock(
+              "演职人员",
               <>
-                {this.buildSubInfoBlock('主演', (item.stars ?? []).join(" / "))}
-                {this.buildSubInfoBlock('导演', (item.directors ?? []).join(" / "))}
-                {this.buildSubInfoBlock('编剧', (item.writers ?? []).join(" / "))}
+                {this.buildSubInfoBlock("主演", (item.stars ?? []).join(" / "))}
+                {this.buildSubInfoBlock(
+                  "导演",
+                  (item.directors ?? []).join(" / ")
+                )}
+                {this.buildSubInfoBlock(
+                  "编剧",
+                  (item.writers ?? []).join(" / ")
+                )}
               </>
-            ))}
+            )}
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            {this.buildInfoBlock(
+              "评论",
+              <>
+                {item.comments
+                  ? item.comments.length === 0
+                  ? this.buildInfoLine("没有评论", "")
+                  : item.comments.map((c) => this.buildComment(c))
+                  : <></>}
+              </>
+            )}
+            <Grid item xs={12}>
+              <div style={{ height: 20 }}></div>
+            </Grid>
           </Grid>
-          
         </Grid>
         <Grid item xs={12} sm={12} md={4} lg={4} xl={3}>
           <Paper className="paper">
@@ -205,10 +306,18 @@ class DetailPage extends React.Component {
     );
   }
 
+  buildFailPage() {
+    return (
+      <SubTopBar>
+        <Typography variant="h4" component="div" style={{ textAlign: 'center' }}>发生了某种错误</Typography>
+      </SubTopBar>
+    )
+  }
+
   render() {
     return (
       <>
-        <SubTopBar below={this.buildBelow()}>{this.buildChild()}</SubTopBar>
+        {this.state.fail ? this.buildFailPage() : (<SubTopBar below={this.buildBelow()}>{this.buildChild()}</SubTopBar>)}
       </>
     );
   }
