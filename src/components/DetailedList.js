@@ -12,7 +12,6 @@ import {
   Button,
 } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
-import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {

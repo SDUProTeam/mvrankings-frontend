@@ -218,7 +218,7 @@ class HomePage extends React.Component {
   }
 
   render() {
-    return <TopBar mode={this.state.mode}>
+    return <TopBar mode={this.state.mode} loginState={this.props.loginState}>
       {this.buildChild()}
     </TopBar>
   }

@@ -1,11 +1,10 @@
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { SubTopBar } from "../components/TopBar";
-import { movieDetail, movieComments } from "../api/api";
+import { movieDetail } from "../api/api";
 import "./Detail.css";
 import {
   Typography,
-  makeStyles,
   Grid,
   Paper,
   Divider,
@@ -29,14 +28,11 @@ class DetailPage extends React.Component {
     };
 
     this.buildChild = this.buildChild.bind(this);
-    this.buildComment = this.buildComment.bind(this);
   }
 
   componentDidMount() {
     // Get detail
     movieDetail(this.props.match.params.id, (res) => {
-      console.log( res.err !== undefined);
-      
       this.setState({
         fail: res.err !== undefined,
         loading: false,
@@ -47,7 +43,7 @@ class DetailPage extends React.Component {
 
   preHandleData(data) {
     const tmp = { ...data };
-    if (tmp.runtime && tmp.runtime.match("[0-9]*[0-9]$")) {
+    if (tmp.runtime && (tmp.runtime + "").match("[0-9]*[0-9]$")) {
       tmp.runtime = tmp.runtime + "分钟";
     }
     return tmp;
@@ -146,6 +142,7 @@ class DetailPage extends React.Component {
             <a
               href={link}
               target="_blank"
+              rel="noopener noreferrer"
               style={{ textDecoration: "none", color: "inherit" }}
             >
               {value}
@@ -184,9 +181,10 @@ class DetailPage extends React.Component {
     );
   }
 
-  buildCommentBlock(user, time, comment, rating) {
+  buildCommentBlock(item, idx) {
+    const {user, time, content, rating} = item
     return (
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={'comment-' + idx}>
         <div>
           <Typography variant="subtitle1" component="span" gutterBottom>
             {user}
@@ -200,25 +198,17 @@ class DetailPage extends React.Component {
           </div>
           
           <Typography variant="body1" color="textSecondary">
-            {comment}
+            {content}
           </Typography>
         </div>
       </Grid>
     );
   }
 
-  buildComment(item) {
-    console.log(item);
-    
-    return <>
-      {this.buildCommentBlock(item.user, item.time, item.content, item.rating)}
-    </>;
-  }
-
   buildChild() {
     const item = this.state.data;
     return (
-      <Grid container spacing={2}>
+      <Grid className="container" container spacing={4}>
         <Grid item xs={12} sm={12} md={8} lg={8} xl={9}>
           <Grid container spacing={4}>
             {this.buildInfoBlock(
@@ -288,7 +278,7 @@ class DetailPage extends React.Component {
                 {item.comments
                   ? item.comments.length === 0
                   ? this.buildInfoLine("没有评论", "")
-                  : item.comments.map((c) => this.buildComment(c))
+                  : item.comments.map((c, idx) => this.buildCommentBlock(c, idx))
                   : <></>}
               </>
             )}
@@ -317,7 +307,7 @@ class DetailPage extends React.Component {
   render() {
     return (
       <>
-        {this.state.fail ? this.buildFailPage() : (<SubTopBar below={this.buildBelow()}>{this.buildChild()}</SubTopBar>)}
+        {this.state.fail ? this.buildFailPage() : (<SubTopBar below={this.buildBelow()} loginState={this.props.loginState}>{this.buildChild()}</SubTopBar>)}
       </>
     );
   }

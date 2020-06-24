@@ -10,6 +10,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import ExitToAppIcon from '@material-ui/icons/ExitToAppRounded'
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import AppIcon from "@material-ui/icons/Apps";
 import ArtTrackIcon from "@material-ui/icons/ArtTrack";
@@ -17,12 +19,17 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { withRouter, useHistory } from "react-router-dom";
+import { Modal, Button } from "@material-ui/core";
+import AccountDialog from './AccountDialog'
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex"
+  },
+  title: {
+    flexGrow: 1
   },
   colRoot: {
     display: 'flex',
@@ -89,6 +96,58 @@ const useStyles = makeStyles((theme) => ({
 const navLabels = ["电影展厅", "表格展示"];
 const navIcons = [<AppIcon />, <ArtTrackIcon />];
 
+function loginModal(loginState) {
+  if (loginState.data.login) {
+    return (<></>)
+  }
+  return (
+    <Modal
+      open={loginState.isOpen}>
+      <AccountDialog onClose={loginState.loginClose} loginState={loginState} />
+    </Modal>
+  )
+}
+
+function AccountButton(props) {
+  return props.loginState.data.login ? (
+    <>
+      <Hidden smDown implementation="css">
+        <Button color="inherit" onClick={props.loginState.exitLogin} startIcon={<ExitToAppIcon />}>
+          <Typography variant="button">注销</Typography>
+        </Button>
+      </Hidden>
+
+      <Hidden mdUp implementation="css">
+        <IconButton
+          color="inherit"
+          aria-label="open login"
+          onClick={props.loginState.exitLogin}
+        >
+          <ExitToAppIcon />
+        </IconButton>
+      </Hidden>
+    </>
+  ) : (
+    <>
+      <Hidden smDown implementation="css">
+        <Button color="inherit" onClick={props.loginState.loginOpen} startIcon={<AccountCircleIcon />}>
+          <Typography variant="button">登录</Typography>
+        </Button>
+      </Hidden>
+
+      <Hidden mdUp implementation="css">
+        <IconButton
+          color="inherit"
+          aria-label="open login"
+          onClick={props.loginState.loginOpen}
+        >
+          <AccountCircleIcon />
+        </IconButton>
+      </Hidden>
+    </>
+  )
+}
+
 function ResponsiveDrawer(props) {
   const { window } = props;
   const classes = useStyles();
@@ -144,9 +203,11 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography className={classes.title} variant="h6" noWrap>
             MVRankings 电影评价网
           </Typography>
+          
+          <AccountButton {...props}/>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="main">
@@ -183,6 +244,7 @@ function ResponsiveDrawer(props) {
         <div className={classes.toolbar} />
         {props.children}
       </main>
+      {loginModal(props.loginState)}
     </div>
   );
 }
@@ -192,7 +254,7 @@ export default withRouter(ResponsiveDrawer);
 export function SubTopBar(props) {
   const classes = useStyles();
   const history = useHistory();
-
+  
   const goBack = () => {
     if (history.length === 1) {
       history.push("/");
@@ -215,9 +277,11 @@ export function SubTopBar(props) {
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography className={classes.title} variant="h6" noWrap>
             MVRankings 电影评价网
           </Typography>
+
+          <AccountButton {...props}/>
         </Toolbar>
       </AppBar>
       <div className={classes.below}>
@@ -227,6 +291,7 @@ export function SubTopBar(props) {
         {props.below ? <></> : <div className={classes.toolbar} />}
         {props.children}
       </main>
+      {loginModal(props.loginState)}
     </div>
   );
 }
