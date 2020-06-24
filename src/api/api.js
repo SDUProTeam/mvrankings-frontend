@@ -1,16 +1,16 @@
 import request from './fetch_helper'
 import md5 from 'md5'
+import { movieSourcesC2E, movieCountryC2E } from './data'
 
-const movieSourcesC2E = {
-    '任意': '',
-    '豆瓣': 'douban',
-    '猫眼': 'maoyan',
-    '时光网': 'mtime'
-}
 export function search(data, order, offset, mode, callback) {
     const reqData = {...data}
     reqData['source'] = movieSourcesC2E[(data ?? {source: '任意'}).source]
-    reqData["country"] = movieSourcesC2E[(data ?? { country: "任意" }).country];
+    reqData["country"] = movieCountryC2E[(data ?? { country: "任意" }).country];
+
+    if (reqData.rate_min === 0) {
+        delete reqData.rate_min
+    }
+
     request({
         url: '/api/' + mode,
         method: 'get',

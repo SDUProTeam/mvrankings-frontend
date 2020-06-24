@@ -12,9 +12,7 @@ import { Box, Snackbar } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import MuiAlert from "@material-ui/lab/Alert";
 
-const movieSources = ["任意", "豆瓣", "猫眼", "时光网"];
-
-const movieCountries = ["任意", "中国大陆", "港澳台", "日本", "韩国", "美国"];
+import { movieSources, movieCountries } from '../api/data'
 
 class HomePage extends React.Component {
   constructor(props) {

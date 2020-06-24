@@ -11,12 +11,7 @@ import {
 } from "@material-ui/core";
 import { Rating } from '@material-ui/lab'
 import MovieRate from "../components/MovieRate";
-
-const movieSourcesE2C = {
-  douban: "豆瓣",
-  maoyan: "猫眼",
-  mtime: "时光网",
-};
+import { movieSourcesE2C } from '../api/data'
 
 class DetailPage extends React.Component {
   constructor(props) {

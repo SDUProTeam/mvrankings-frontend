@@ -17,7 +17,7 @@ import Input from "@material-ui/core/Input";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputBase from "@material-ui/core/InputBase";
-
+import { movieSources, movieCountries } from '../api/data'
 import "./SearchBar.css";
 
 const BootstrapInput = withStyles((theme) => ({
@@ -54,10 +54,6 @@ const BootstrapInput = withStyles((theme) => ({
     },
   },
 }))(InputBase);
-
-const movieSources = ["任意", "豆瓣", "猫眼", "时光网"];
-
-const movieCountries = ["任意", "中国大陆", "港澳台", "日本", "韩国", "美国"];
 
 const useStyles = makeStyles((theme) => ({
   root: {
