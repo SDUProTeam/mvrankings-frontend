@@ -21,6 +21,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { withRouter, useHistory } from "react-router-dom";
 import { Modal, Button } from "@material-ui/core";
 import AccountDialog from './AccountDialog'
+import ElevationScrollAppBar from './ElevationScroll'
 
 const drawerWidth = 240;
 
@@ -266,7 +267,7 @@ export function SubTopBar(props) {
   return (
     <div className={classes.colRoot}>
       <CssBaseline />
-      <AppBar position="fixed" className={classes.subAppBar}>
+      <ElevationScrollAppBar position="fixed">
         <Toolbar>
           <IconButton
             color="inherit"
@@ -283,7 +284,7 @@ export function SubTopBar(props) {
 
           <AccountButton {...props}/>
         </Toolbar>
-      </AppBar>
+      </ElevationScrollAppBar>
       <div className={classes.below}>
         {props.below}
       </div>

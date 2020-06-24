@@ -26,16 +26,22 @@ function TabPanel(props) {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        margin: 24,
+        margin: '48px 0',
         padding: 16,
         maxWidth: 500,
         position: 'absolute',
         left: '50%',
-        transform: 'translateX(-50%)'
+        transform: 'translateX(-50%)',
+        [theme.breakpoints.down(500)]: {
+            transform: 'none',
+            left: 'unset',
+            margin: 24
+        }
     },
     input: {
         width: '100%',
-        margin: '16px 0'
+        margin: '16px 0',
+        minWidth: 300
     },
     button: {
         marginTop: 16,
@@ -91,7 +97,7 @@ function AccountDialog(props, ref) {
         userLogin(formData.username, formData.pwd, res => {
             setLoading(false)
             
-            if (res === 'success') {
+            if (res.success) {
                 handleClose()
                 props.loginState.loginChange()
                 alert('登录成功')

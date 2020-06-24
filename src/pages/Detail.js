@@ -298,7 +298,7 @@ class DetailPage extends React.Component {
 
   buildFailPage() {
     return (
-      <SubTopBar>
+      <SubTopBar loginState={this.props.loginState}>
         <Typography variant="h4" component="div" style={{ textAlign: 'center' }}>发生了某种错误</Typography>
       </SubTopBar>
     )

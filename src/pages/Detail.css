@@ -1,11 +1,11 @@
 .blurBackground {
-    height: 400px;
+    height: 500px;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     filter: blur(20px) opacity(0.9);
     width: calc(100% + 100px);
-    transform: translate(-50px, -50px);
+    transform: translate(-50px, -100px);
 }
 
 .headForeground {
