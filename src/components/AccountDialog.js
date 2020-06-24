@@ -32,16 +32,17 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
+        minWidth: 400,
         [theme.breakpoints.down(500)]: {
             transform: 'none',
             left: 'unset',
-            margin: 24
+            margin: 24,
+            minWidth: 0
         }
     },
     input: {
         width: '100%',
-        margin: '16px 0',
-        minWidth: 300
+        margin: '16px 0'
     },
     button: {
         marginTop: 16,
