@@ -1,0 +1,29 @@
+
+
+@media (min-width: 600px) {
+    .toolbar {
+        min-height: 56px;
+    }
+}
+
+.toolbar {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+}
+
+.tip {
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.button {
+    margin: 0 16px !important;
+}
+
+.item {
+    margin: 16px
+}

@@ -1,4 +1,4 @@
-let baseUrl = "http://106.75.55.108:8008";
+const baseUrl = "http://106.75.55.108:8008";
 
 async function parseJSON(response) {
   var data = await response.text()
@@ -36,6 +36,8 @@ export default async function request(options = {}) {
   let { data, url } = options;
   options = { ...options };
   options.mode = "cors";
+  options.cache = 'no-cache'
+  options.credentials = 'include'
   delete options.url;
 
   if (data) {
@@ -44,16 +46,14 @@ export default async function request(options = {}) {
     } else {
       options.body = postFormat(data);
       options.headers = {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
       };
     }
     delete options.data;
   }
 
   try {
-    const rawResp = await fetch(baseUrl + url, {...options,
-      credentials: "include",
-    });
+    const rawResp = await fetch(baseUrl + url, options);
     const checkedResp = await checkStatus(rawResp)
     
     return parseJSON(checkedResp);

@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-
 import { search } from "../api/api";
 import TopBar from "../components/TopBar";
 import SearchBar from "../components/SearchBar";
@@ -13,10 +12,12 @@ import Pagination from "@material-ui/lab/Pagination";
 import MuiAlert from "@material-ui/lab/Alert";
 
 import { movieSources, movieCountries } from '../api/data'
+import { storeState, fetchState } from '../utils/StateUtil'
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
+    
     this.state = {
       loading: false,
       mode: parseInt(getUrlParam(props.history.location.search, "mode") ?? 0),
@@ -51,7 +52,12 @@ class HomePage extends React.Component {
   }
 
   componentDidMount() {
-    this.doSearch(this.state.searchData);
+    var tmpState = fetchState()
+    if (Object.keys(tmpState).length > 0) {
+      this.setState(tmpState)
+    } else {
+      this.doSearch(this.state.searchData);
+    }
   }
 
   handlePageChange(event, value) {
@@ -89,8 +95,13 @@ class HomePage extends React.Component {
   buildChild() {
     let list = undefined;
 
+    const handleCardClick = (history, id) => {
+      storeState(this.state)
+      history.replace('/detail/' + id)
+    }
+
     if (this.state.mode === 0) {
-      list = <SquareList data={this.state.data} loading={this.state.loading} />;
+      list = <SquareList data={this.state.data} loading={this.state.loading} handleClick={handleCardClick} />;
     } else {
       list = (
         <DetailedList

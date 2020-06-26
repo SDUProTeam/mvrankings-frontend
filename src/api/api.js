@@ -27,7 +27,7 @@ export function search(data, order, offset, mode, callback) {
 
 export function movieDetail(id, callback) {
     request({
-        url: '/api/movie/' + id,
+        url: '/api/movie/' + id + '/',
         method: 'get',
     }).then(res => {
         callback(res)
@@ -103,4 +103,13 @@ export function userReg(un, phone, pwd, callback) {
     } else {
         alert('用户名/手机号不能为空')
     }
+}
+
+export function userHistory(callback) {
+    request({
+        url: '/api/history',
+        method: 'get'
+    }).then(res => {
+        callback(res)
+    })
 }

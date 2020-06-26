@@ -31,7 +31,7 @@ class DetailPage extends React.Component {
       this.setState({
         fail: res.err !== undefined,
         loading: false,
-        data: this.preHandleData((res.data ?? [{}])[0]),
+        data: this.preHandleData(res.data ?? {}),
       });
     });
   }
@@ -271,9 +271,9 @@ class DetailPage extends React.Component {
               "评论",
               <>
                 {item.comments
-                  ? item.comments.length === 0
-                  ? this.buildInfoLine("没有评论", "")
-                  : item.comments.map((c, idx) => this.buildCommentBlock(c, idx))
+                  ? (item.comments.length === 0
+                      ? this.buildInfoLine("没有评论", "")
+                      : (item.comments instanceof Array ? item.comments.map((c, idx) => this.buildCommentBlock(c, idx)) : this.buildCommentBlock(item.comments, 0)))
                   : <></>}
               </>
             )}

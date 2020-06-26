@@ -41,7 +41,7 @@ function App() {
     isOpen: openLogin,
     data: loginData,
     loginChange: handleAccountChange,
-    exitLogin: exitLogin
+    exitLogin: exitLogin,
   }
   
   return (

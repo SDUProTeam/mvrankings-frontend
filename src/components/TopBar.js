@@ -13,6 +13,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import ExitToAppIcon from '@material-ui/icons/ExitToAppRounded'
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import HistoryIcon from "@material-ui/icons/History";
 import AppIcon from "@material-ui/icons/Apps";
 import ArtTrackIcon from "@material-ui/icons/ArtTrack";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -22,6 +23,7 @@ import { withRouter, useHistory } from "react-router-dom";
 import { Modal, Button } from "@material-ui/core";
 import AccountDialog from './AccountDialog'
 import ElevationScrollAppBar from './ElevationScroll'
+import HistoryDrawer from "./HistoryDrawer";
 
 const drawerWidth = 240;
 
@@ -41,6 +43,10 @@ const useStyles = makeStyles((theme) => ({
       width: drawerWidth,
       flexShrink: 0,
     },
+  },
+  historyDrawer: {
+    width: 500,
+    maxWidth: '80%'
   },
   appBar: {
     [theme.breakpoints.up("md")]: {
@@ -113,25 +119,38 @@ function AccountButton(props) {
   return props.loginState.data.login ? (
     <>
       <Hidden smDown implementation="css">
-        <Button color="inherit" onClick={props.loginState.exitLogin} startIcon={<ExitToAppIcon />}>
+        <Button color="inherit" size="large" onClick={props.handleToggle} startIcon={<HistoryIcon />}>
+          <Typography variant="button">历史记录</Typography>
+        </Button>
+        <div style={{ width: 16, display: 'inline-block' }}></div>
+        <Button color="inherit" size="large" onClick={props.loginState.exitLogin} startIcon={<ExitToAppIcon />}>
           <Typography variant="button">注销</Typography>
         </Button>
       </Hidden>
 
       <Hidden mdUp implementation="css">
-        <IconButton
-          color="inherit"
-          aria-label="open login"
-          onClick={props.loginState.exitLogin}
-        >
-          <ExitToAppIcon />
-        </IconButton>
+        <div style={{ minWidth: 96 }}>
+          <IconButton
+            color="inherit"
+            aria-label="open history"
+            onClick={props.handleToggle}
+          >
+            <HistoryIcon />
+          </IconButton>
+          <IconButton
+            color="inherit"
+            aria-label="logout"
+            onClick={props.loginState.exitLogin}
+          >
+            <ExitToAppIcon />
+          </IconButton>
+        </div>
       </Hidden>
     </>
   ) : (
     <>
       <Hidden smDown implementation="css">
-        <Button color="inherit" onClick={props.loginState.loginOpen} startIcon={<AccountCircleIcon />}>
+        <Button color="inherit" size="large" onClick={props.loginState.loginOpen} startIcon={<AccountCircleIcon />}>
           <Typography variant="button">登录</Typography>
         </Button>
       </Hidden>
@@ -149,15 +168,19 @@ function AccountButton(props) {
   )
 }
 
-function ResponsiveDrawer(props) {
+function MainTopBar(props) {
   const { window } = props;
   const classes = useStyles();
-  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [historyOpen, setHistoryOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const handleHistoryToggle = () => {
+    setHistoryOpen(!historyOpen);
+  }
 
   const handleListItemClick = (index) => {
     props.history.replace("?mode=" + index);
@@ -208,7 +231,7 @@ function ResponsiveDrawer(props) {
             MVRankings 电影评价网
           </Typography>
           
-          <AccountButton {...props}/>
+          <AccountButton {...props} handleToggle={handleHistoryToggle}/>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="main">
@@ -216,7 +239,7 @@ function ResponsiveDrawer(props) {
           <Drawer
             container={container}
             variant="temporary"
-            anchor={theme.direction === "rtl" ? "right" : "left"}
+            anchor="left"
             open={mobileOpen}
             onClose={handleDrawerToggle}
             classes={{
@@ -241,6 +264,24 @@ function ResponsiveDrawer(props) {
           </Drawer>
         </Hidden>
       </nav>
+      <nav>
+        {/* 历史记录 */}
+        <Drawer
+            container={container}
+            variant="temporary"
+            anchor="right"
+            open={historyOpen}
+            onClose={handleHistoryToggle}
+            classes={{
+              paper: classes.historyDrawer,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+          >
+            <HistoryDrawer onClose={handleHistoryToggle} />
+          </Drawer>
+      </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {props.children}
@@ -250,19 +291,25 @@ function ResponsiveDrawer(props) {
   );
 }
 
-export default withRouter(ResponsiveDrawer);
+export default withRouter(MainTopBar);
 
 export function SubTopBar(props) {
   const classes = useStyles();
   const history = useHistory();
+  const { window } = props;
+  
+  const [historyOpen, setHistoryOpen] = React.useState(false);
+
+  const handleHistoryToggle = () => {
+    setHistoryOpen(!historyOpen);
+  }
   
   const goBack = () => {
-    if (history.length === 1) {
-      history.push("/");
-    } else {
-      history.goBack();
-    }
+    history.replace("/")
   };
+
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <div className={classes.colRoot}>
@@ -282,12 +329,32 @@ export function SubTopBar(props) {
             MVRankings 电影评价网
           </Typography>
 
-          <AccountButton {...props}/>
+          <AccountButton {...props} handleToggle={handleHistoryToggle}/>
         </Toolbar>
       </ElevationScrollAppBar>
       <div className={classes.below}>
         {props.below}
       </div>
+      
+      <nav>
+        {/* 历史记录 */}
+        <Drawer
+            container={container}
+            variant="temporary"
+            anchor="right"
+            open={historyOpen}
+            onClose={handleHistoryToggle}
+            classes={{
+              paper: classes.historyDrawer,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+          >
+            <HistoryDrawer onClose={handleHistoryToggle} />
+          </Drawer>
+      </nav>
+
       <main className={classes.subBarContent}>
         {props.below ? <></> : <div className={classes.toolbar} />}
         {props.children}

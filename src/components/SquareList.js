@@ -7,8 +7,9 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import MovieRate from './MovieRate'
+import { movieSources } from '../api/data'
 
 const useStyles = makeStyles((theme) => ({
     cover: {
@@ -66,12 +67,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const movieSource = {
-    'mtime': '时光网',
-    'maoyan': '猫眼',
-    'douban': '豆瓣'
-}
-
 class MoveHandler {
     components = {}
 
@@ -104,6 +99,17 @@ class MoveHandler {
         Object.keys(this.components ?? {}).forEach(k => {
             this.requestQuit(k)
         })
+    }
+}
+
+const pushDetail = (handleClick, history, id, home = false) => {
+    console.log('push ' + home);
+    
+    if (!home) {
+        // 非主页点击，直接跳转就行
+        history.replace('/detail/' + id)
+    } else {
+        handleClick(history, id)
     }
 }
 
@@ -140,7 +146,7 @@ class CardItem extends React.Component {
         const float = this.state.hover ? (
             <div style={{ zIndex: 1300, position: 'absolute', transform: 'translateX(-40px)' }} 
                 onMouseLeave={this.requestQuit} onMouseEnter={() => {}}>
-                <Link className={classes.hoverCover} to={'/detail/' + item.sourceId} target="_blank">
+                <div className={classes.hoverCover} onClick={() => pushDetail(this.props.handleClick, this.props.history, item.sourceId, this.props.home ?? false)}>
                     <Card className={classes.hoverCard}>
                         <CardActionArea>
                             <CardMedia
@@ -164,12 +170,12 @@ class CardItem extends React.Component {
                                     上映时间：<span style={{fontWeight: 'bold'}}>{(item.releaseDate ?? []).join(',')}</span>
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="div" noWrap>
-                                    来源：<span style={{fontWeight: 'bold'}}>{movieSource[item.source] ?? ''}</span>
+                                    来源：<span style={{fontWeight: 'bold'}}>{movieSources[item.source] ?? ''}</span>
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
                     </Card>
-                </Link>
+                </div>
             </div>
         ) : (<></>)
         
@@ -177,7 +183,7 @@ class CardItem extends React.Component {
             <Grid item>
                 {float}
                 <div>
-                    <Link className={classes.hoverCover} to={'/detail/' + item.sourceId} target="_blank">
+                    <a className={classes.hoverCover} onClick={() => pushDetail(this.props.handleClick, this.props.history, item.sourceId, this.props.home ?? false)}>
                         <CardMedia
                             component="img"
                             image={item.cover}
@@ -185,7 +191,7 @@ class CardItem extends React.Component {
                             className={classes.cover}
                             onMouseEnter={this.requestEnter}
                         />
-                    </Link>
+                    </a>
                     <Typography className={classes.name} noWrap>{item.name}</Typography>
                     <MovieRate className={classes.rate} rate={item.rating ?? ''} />
                 </div>
@@ -194,13 +200,15 @@ class CardItem extends React.Component {
     }
 }
 
+const CardItemWithRouter = withRouter(CardItem)
+
 function MobileCardItem(props) {
-    const classes = props.classes
+    const classes = useStyles()
     let item = props.item
     
     return (
         <Grid item xs={12} sm={12}>
-            <Link style={{ textDecoration: 'none' }} to={'/detail/' + item.sourceId} target="_blank">
+            <div style={{ textDecoration: 'none' }} onClick={() => pushDetail(props.handleClick, props.history, item.sourceId, props.home ?? false)}>
                 <Card className={classes.mobileCard}>
                     <CardActionArea>
                         <div style={{ display: 'flex' }}>
@@ -228,17 +236,21 @@ function MobileCardItem(props) {
                                     <span>上映时间：</span><span style={{fontWeight: 'bold'}}>{(item.releaseDate ?? []).join(',')}</span>
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="div" noWrap>
-                                    <span>来源：</span><span style={{fontWeight: 'bold'}}>{movieSource[item.source] ?? ''}</span>
+                                    <span>来源：</span><span style={{fontWeight: 'bold'}}>{movieSources[item.source] ?? ''}</span>
                                 </Typography>
                             </CardContent>
                         </div>
                     </CardActionArea>
                 </Card>
-            </Link>
+            </div>
         </Grid>
     )
 }
 
+export const MobileCardItemWithRouter = withRouter(MobileCardItem)
+
+/* 使用全局moveHandler避免SquareList被重建后，handler中数据丢失 */
+const moveHandler = new MoveHandler()
 export default function SquareList(props) {
     const classes = useStyles()
 
@@ -280,13 +292,11 @@ export default function SquareList(props) {
         )
     }
 
-    const moveHandler = new MoveHandler()
-
     const getItems = () => {
         return (
             <>
                 {props.data.data.map( (item) => {
-                    return (<CardItem item={item} classes={classes} key={item.sourceId} handler={moveHandler} />)
+                    return (<CardItemWithRouter item={item} classes={classes} key={item.sourceId} handler={moveHandler} handleClick={props.handleClick} home={true} />)
                 })}
             </>
         )
@@ -296,7 +306,7 @@ export default function SquareList(props) {
         return (
             <>
                 {props.data.data.map( (item) => {
-                    return (<MobileCardItem item={item} classes={classes} key={'mod-' + item.sourceId} />)
+                    return (<MobileCardItemWithRouter item={item} key={'mod-' + item.sourceId} handleClick={props.handleClick} home={true}/>)
                 })}
             </>
         )
