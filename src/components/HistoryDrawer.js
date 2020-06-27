@@ -1,9 +1,10 @@
 import React from 'react'
-import { makeStyles, Divider, IconButton, Typography, withStyles } from '@material-ui/core'
+import { Divider, IconButton, Typography } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { userHistory } from '../api/api'
 import { MobileCardItemWithRouter } from './SquareList'
 import './HistoryDrawer.css'
+import cookie from 'react-cookies'
 
 class HistoryDrawer extends React.Component {
 
@@ -16,22 +17,28 @@ class HistoryDrawer extends React.Component {
     }
 
     componentDidMount() {
-        // 加载历史
-        userHistory(res => {
-            if (res.success) {
-                this.setState({
-                    history: res.history,
-                    loading: false
-                })
-            } else {
-                this.setState({
-                    loading: false
-                })
-            }
-        })
+        if (this.props.loginState.data.login) {
+            // 加载历史
+            userHistory(res => {
+                if (res.success) {
+                    this.setState({
+                        history: res.history,
+                        loading: false
+                    })
+                } else {
+                    this.setState({
+                        loading: false
+                    })
+                }
+            })
+        }
     }
 
     render() {
+        if (!this.props.loginState.data.login) {
+            return <></>
+        }
+
         const handleClose = () => {
             this.props.onClose()
         }

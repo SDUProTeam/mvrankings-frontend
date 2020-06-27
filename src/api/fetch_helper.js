@@ -37,7 +37,6 @@ export default async function request(options = {}) {
   options = { ...options };
   options.mode = "cors";
   options.cache = 'no-cache'
-  options.credentials = 'include'
   delete options.url;
 
   if (data) {
@@ -53,7 +52,7 @@ export default async function request(options = {}) {
   }
 
   try {
-    const rawResp = await fetch(baseUrl + url, options);
+    const rawResp = await fetch(baseUrl + url, {...options, 'credentials': 'include'});
     const checkedResp = await checkStatus(rawResp)
     
     return parseJSON(checkedResp);

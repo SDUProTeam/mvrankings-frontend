@@ -18,7 +18,7 @@ import AppIcon from "@material-ui/icons/Apps";
 import ArtTrackIcon from "@material-ui/icons/ArtTrack";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { withRouter, useHistory } from "react-router-dom";
 import { Modal, Button } from "@material-ui/core";
 import AccountDialog from './AccountDialog'
@@ -279,7 +279,7 @@ function MainTopBar(props) {
               keepMounted: true, // Better open performance on mobile.
             }}
           >
-            <HistoryDrawer onClose={handleHistoryToggle} />
+            <HistoryDrawer onClose={handleHistoryToggle} loginState={props.loginState} />
           </Drawer>
       </nav>
       <main className={classes.content}>
@@ -351,7 +351,7 @@ export function SubTopBar(props) {
               keepMounted: true, // Better open performance on mobile.
             }}
           >
-            <HistoryDrawer onClose={handleHistoryToggle} />
+            <HistoryDrawer onClose={handleHistoryToggle} loginState={props.loginState} />
           </Drawer>
       </nav>
 
