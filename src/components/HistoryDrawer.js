@@ -4,7 +4,6 @@ import CloseIcon from '@material-ui/icons/Close'
 import { userHistory } from '../api/api'
 import { MobileCardItemWithRouter } from './SquareList'
 import './HistoryDrawer.css'
-import cookie from 'react-cookies'
 
 class HistoryDrawer extends React.Component {
 
@@ -55,7 +54,7 @@ class HistoryDrawer extends React.Component {
             return this.state.history.length === 0
                 ? emptySection
                 : this.state.history.map(h => (
-                    <div className="item"  key={'hist-' + h.sourceId}>
+                    <div className="item"  key={'hist-' + h.movieId}>
                         <MobileCardItemWithRouter item={h}/>
                     </div>
                 ))

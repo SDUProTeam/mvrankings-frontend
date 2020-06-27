@@ -2,10 +2,18 @@ import request from './fetch_helper'
 import md5 from 'md5'
 import { movieSourcesC2E, movieCountryC2E } from './data'
 
+function setMovieCover(item) {
+    if (item.source.douban?.cover ?? false) {
+        item.cover = item.source.douban.cover
+    } else {
+        item.cover = Object.keys(item.source)[0].cover
+    }
+}
+
 export function search(data, order, offset, mode, callback) {
     const reqData = {...data}
     reqData['source'] = movieSourcesC2E[(data ?? {source: '任意'}).source]
-    reqData["country"] = movieCountryC2E[(data ?? { country: "任意" }).country];
+    reqData["country"] = movieCountryC2E[(data ?? { country: "任意" }).country]
 
     if (reqData.rate_min === 0) {
         delete reqData.rate_min
@@ -21,6 +29,9 @@ export function search(data, order, offset, mode, callback) {
             offset: offset
         }
     }).then(res => {
+        if (res.data) {
+            res.data.forEach(item => setMovieCover(item))
+        }
         callback(res)
     })
 }
@@ -30,6 +41,9 @@ export function movieDetail(id, callback) {
         url: '/api/movie/' + id + '/',
         method: 'get',
     }).then(res => {
+        if (res.data) {
+            setMovieCover(res.data)
+        }
         callback(res)
     })
 }
@@ -110,6 +124,9 @@ export function userHistory(callback) {
         url: '/api/history',
         method: 'get'
     }).then(res => {
+        if (res.success && res.history) {
+            res.history.forEach(item => setMovieCover(item))
+        }
         callback(res)
     })
 }

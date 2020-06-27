@@ -168,6 +168,34 @@ function AccountButton(props) {
   )
 }
 
+function HistoryRecords(props) {
+  const classes = useStyles()
+  const { window } = props
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
+      
+  return (props.loginState?.data?.login ?? false) ? (
+    <nav>
+      {/* 历史记录 */}
+      <Drawer
+          container={container}
+          variant="temporary"
+          anchor="right"
+          open={props.historyOpen}
+          onClose={props.handleHistoryToggle}
+          classes={{
+            paper: classes.historyDrawer,
+          }}
+          ModalProps={{
+            keepMounted: true,
+          }}
+        >
+          <HistoryDrawer onClose={props.handleHistoryToggle} loginState={props.loginState} />
+        </Drawer>
+    </nav>
+  ) : (<></>)
+}
+
 function MainTopBar(props) {
   const { window } = props;
   const classes = useStyles();
@@ -264,24 +292,9 @@ function MainTopBar(props) {
           </Drawer>
         </Hidden>
       </nav>
-      <nav>
-        {/* 历史记录 */}
-        <Drawer
-            container={container}
-            variant="temporary"
-            anchor="right"
-            open={historyOpen}
-            onClose={handleHistoryToggle}
-            classes={{
-              paper: classes.historyDrawer,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            <HistoryDrawer onClose={handleHistoryToggle} loginState={props.loginState} />
-          </Drawer>
-      </nav>
+
+      <HistoryRecords {...props} historyOpen={historyOpen} handleHistoryToggle={handleHistoryToggle} />
+
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {props.children}
@@ -296,7 +309,6 @@ export default withRouter(MainTopBar);
 export function SubTopBar(props) {
   const classes = useStyles();
   const history = useHistory();
-  const { window } = props;
   
   const [historyOpen, setHistoryOpen] = React.useState(false);
 
@@ -307,9 +319,6 @@ export function SubTopBar(props) {
   const goBack = () => {
     history.replace("/")
   };
-
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <div className={classes.colRoot}>
@@ -335,25 +344,8 @@ export function SubTopBar(props) {
       <div className={classes.below}>
         {props.below}
       </div>
-      
-      <nav>
-        {/* 历史记录 */}
-        <Drawer
-            container={container}
-            variant="temporary"
-            anchor="right"
-            open={historyOpen}
-            onClose={handleHistoryToggle}
-            classes={{
-              paper: classes.historyDrawer,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            <HistoryDrawer onClose={handleHistoryToggle} loginState={props.loginState} />
-          </Drawer>
-      </nav>
+
+      <HistoryRecords {...props} historyOpen={historyOpen} handleHistoryToggle={handleHistoryToggle} />
 
       <main className={classes.subBarContent}>
         {props.below ? <></> : <div className={classes.toolbar} />}

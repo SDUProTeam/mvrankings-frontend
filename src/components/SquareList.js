@@ -124,7 +124,7 @@ class CardItem extends React.Component {
         this.requestEnter = this.requestEnter.bind(this)
         this.requestQuit = this.requestQuit.bind(this)
 
-        props.handler.regComponent(this, props.item.sourceId)
+        props.handler.regComponent(this, props.item.movieId)
     }
 
     shouldComponentUpdate(newProps, newState) {
@@ -132,11 +132,11 @@ class CardItem extends React.Component {
     }
 
     requestEnter() {
-        this.props.handler.requestEnter(this.props.item.sourceId)
+        this.props.handler.requestEnter(this.props.item.movieId)
     }
 
     requestQuit() {
-        this.props.handler.requestQuit(this.props.item.sourceId)
+        this.props.handler.requestQuit(this.props.item.movieId)
     }
 
     render() {
@@ -146,7 +146,7 @@ class CardItem extends React.Component {
         const float = this.state.hover ? (
             <div style={{ zIndex: 1300, position: 'absolute', transform: 'translateX(-40px)' }} 
                 onMouseLeave={this.requestQuit} onMouseEnter={() => {}}>
-                <div className={classes.hoverCover} onClick={() => pushDetail(this.props.handleClick, this.props.history, item.sourceId, this.props.home ?? false)}>
+                <div className={classes.hoverCover} onClick={() => pushDetail(this.props.handleClick, this.props.history, item.movieId, this.props.home ?? false)}>
                     <Card className={classes.hoverCard}>
                         <CardActionArea>
                             <CardMedia
@@ -183,7 +183,7 @@ class CardItem extends React.Component {
             <Grid item>
                 {float}
                 <div>
-                    <a className={classes.hoverCover} onClick={() => pushDetail(this.props.handleClick, this.props.history, item.sourceId, this.props.home ?? false)}>
+                    <a className={classes.hoverCover} onClick={() => pushDetail(this.props.handleClick, this.props.history, item.movieId, this.props.home ?? false)}>
                         <CardMedia
                             component="img"
                             image={item.cover}
@@ -208,7 +208,7 @@ function MobileCardItem(props) {
     
     return (
         <Grid item xs={12} sm={12}>
-            <div style={{ textDecoration: 'none' }} onClick={() => pushDetail(props.handleClick, props.history, item.sourceId, props.home ?? false)}>
+            <div style={{ textDecoration: 'none' }} onClick={() => pushDetail(props.handleClick, props.history, item.movieId, props.home ?? false)}>
                 <Card className={classes.mobileCard}>
                     <CardActionArea>
                         <div style={{ display: 'flex' }}>
@@ -296,7 +296,7 @@ export default function SquareList(props) {
         return (
             <>
                 {props.data.data.map( (item) => {
-                    return (<CardItemWithRouter item={item} classes={classes} key={item.sourceId} handler={moveHandler} handleClick={props.handleClick} home={true} />)
+                    return (<CardItemWithRouter item={item} classes={classes} key={item.movieId} handler={moveHandler} handleClick={props.handleClick} home={true} />)
                 })}
             </>
         )
@@ -306,7 +306,7 @@ export default function SquareList(props) {
         return (
             <>
                 {props.data.data.map( (item) => {
-                    return (<MobileCardItemWithRouter item={item} key={'mod-' + item.sourceId} handleClick={props.handleClick} home={true}/>)
+                    return (<MobileCardItemWithRouter item={item} key={'mod-' + item.movieId} handleClick={props.handleClick} home={true}/>)
                 })}
             </>
         )
