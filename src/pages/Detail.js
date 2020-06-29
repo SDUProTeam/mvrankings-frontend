@@ -1,17 +1,59 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { SubTopBar } from "../components/TopBar";
-import { movieDetail } from "../api/api";
+import { movieDetail, recommendMovies } from "../api/api";
 import "./Detail.css";
 import {
   Typography,
   Grid,
   Paper,
   Divider,
+  CircularProgress,
+  makeStyles,
+  Card,
+  CardActionArea,
 } from "@material-ui/core";
 import { Rating } from '@material-ui/lab'
 import MovieRate from "../components/MovieRate";
 import { movieSourcesE2C } from '../api/data'
+
+const useStyles = makeStyles((theme) => ({
+  recItemRoot: {
+    marginTop: 16
+  },
+  recItem: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingRight: 16,
+  },
+  recItemCover: {
+    width: 80,
+    height: 100,
+    borderRadius: 4
+  },
+  recItemName: {
+    flex: 1,
+    padding: 8
+  }
+}))
+
+function RecommendItem(props) {
+  const classes = useStyles()
+
+  return (
+      <Card className={classes.recItemRoot}>
+        <CardActionArea>
+          <Link to={'/detail/' + props.item.movieId} style={{ textDecoration: 'none' }}>
+            <div className={classes.recItem}>
+              <img className={classes.recItemCover} src={props.item.cover} alt={props.item.name}></img>
+              <Typography variant="subtitle1" className={classes.recItemName} color="textPrimary" noWrap>{props.item.name}</Typography>
+              <MovieRate rate={props.item.rating} mobile={true}/>
+            </div>
+          </Link>
+        </CardActionArea>
+      </Card>
+  )
+}
 
 class DetailPage extends React.Component {
   constructor(props) {
@@ -20,9 +62,11 @@ class DetailPage extends React.Component {
       fail: false,
       loading: true,
       data: {},
+      recommend: undefined
     };
 
     this.buildChild = this.buildChild.bind(this);
+    this.buildRecommend = this.buildRecommend.bind(this)
   }
 
   componentDidMount() {
@@ -33,6 +77,13 @@ class DetailPage extends React.Component {
         loading: false,
         data: this.preHandleData(res.data ?? {}),
       });
+
+      // 开始获取影片推荐
+      recommendMovies(res => {
+        this.setState({
+          recommend: res.rec
+        })
+      })
     });
   }
 
@@ -200,6 +251,34 @@ class DetailPage extends React.Component {
     );
   }
 
+  buildRecommendLoading() {
+    return (
+      <div style={{ textAlign: 'center', padding: 16 }}>
+        <CircularProgress />
+        <Typography variant="body1" color="textSecondary">正在加载</Typography>
+      </div>
+    )
+  }
+
+  buildRecommend() {
+    if ((this.state.recommend ?? []).length === 0) {
+      return this.buildRecommendEmpty()
+    }
+    return this.state.recommend.map(h => (
+        <div className="rec-item"  key={'rec-' + h.movieId}>
+            <RecommendItem item={h}/>
+        </div>
+    ))
+  }
+
+  buildRecommendEmpty() {
+    return (
+      <div style={{ textAlign: 'center', padding: 16 }}>
+        <Typography variant="body1" color="textSecondary">无影片推荐</Typography>
+      </div>
+    )
+  }
+
   buildChild() {
     const item = this.state.data;
     return (
@@ -226,7 +305,7 @@ class DetailPage extends React.Component {
                   "评分",
                   Object.keys(item?.source ?? {}).map(k => {
                     const src = item.source[k]
-                    return `${movieSourcesE2C[k]}：${src.rating ?? 0} (${src.rateNum ?? 0}次)`
+                    return `${movieSourcesE2C[k]}：${src.rating ?? '暂无评分'} (${src.rateNum ?? 0}次)`
                   }).join('\n')
                 )}
                 {this.buildInfoLine("类型", (item.types ?? []).join(" / "))}
@@ -284,6 +363,7 @@ class DetailPage extends React.Component {
         <Grid item xs={12} sm={12} md={4} lg={4} xl={3}>
           <Paper className="paper">
             <Typography variant="h6">影片推荐</Typography>
+            { this.state.recommend === undefined ? this.buildRecommendLoading() : this.buildRecommend() }
           </Paper>
         </Grid>
       </Grid>

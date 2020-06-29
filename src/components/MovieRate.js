@@ -23,14 +23,21 @@ const useStyles = makeStyles((theme) => ({
     frac: {
         fontSize: '20px'
     },
+    tip: {
+        fontSize: '16px'
+    }
 }));
 
 
 export default function MovieRate(props) {
     const classes = useStyles()
 
-    if (props.rate === '' || props.rate === undefined) {
-        return (<></>)
+    if (props.rate === '' || props.rate === undefined || props.rate === '0' || props.rate === '0.0') {
+        return (
+            <div className={(props.mobile ?? false) ? classes.mobileRate : classes.rate}>
+                <span className={classes.tip}>暂无评分</span>
+            </div>
+        )
     }
 
     let intv = (props.rate + '').split('.')[0]

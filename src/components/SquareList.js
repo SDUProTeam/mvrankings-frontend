@@ -102,8 +102,6 @@ class MoveHandler {
 }
 
 const pushDetail = (handleClick, history, id, home = false) => {
-    console.log('push ' + home);
-    
     if (!home) {
         // 非主页点击，直接跳转就行
         history.replace('/detail/' + id)
@@ -199,7 +197,7 @@ class CardItem extends React.Component {
     }
 }
 
-const CardItemWithRouter = withRouter(CardItem)
+export const CardItemWithRouter = withRouter(CardItem)
 
 function MobileCardItem(props) {
     const classes = useStyles()

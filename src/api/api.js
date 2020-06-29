@@ -25,6 +25,9 @@ function setMovieRating(item) {
     
     if (item.source) {
         Object.keys(item.source).forEach(k => {
+            if (!item.source[k].rating || item.source[k].rating.trim().length === 0 || item.source[k].rating === '0' || item.source[k].rating === '0.0') {
+                item.source[k].rating = undefined
+            }
             if (item.source[k].rating) {
                 var rating = parseFloat(item.source[k].rating)
                 if (isNaN(rating)) {
@@ -111,8 +114,22 @@ export function movieComments(id, callback) {
     })
 }
 
-export function recommendMovies() {
-
+export function recommendMovies(callback) {
+    request({
+        url: '/api/recommend',
+        method: 'get'
+    }).then(res => {
+        if (res.rec) {
+            res.rec.forEach(item => {
+                if (item) {
+                    setMovieCover(item)
+                    setMovieSource(item)
+                    setMovieRating(item)
+                }
+            })
+        }
+        callback(res)
+    })
 }
 
 export function userLogin(un, pwd, callback) {
