@@ -176,7 +176,13 @@ export function userHistory(callback) {
         method: 'get'
     }).then(res => {
         if (res.success && res.history) {
-            res.history.forEach(item => setMovieCover(item))
+            res.history.forEach(item => {
+                if (item) {
+                    setMovieCover(item)
+                    setMovieSource(item)
+                    setMovieRating(item)
+                }
+            })
         }
         callback(res)
     })
