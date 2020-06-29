@@ -80,9 +80,15 @@ class DetailPage extends React.Component {
 
       // 开始获取影片推荐
       recommendMovies(res => {
-        this.setState({
-          recommend: res.rec
-        })
+        if (!res.rec) {
+          this.setState({
+            recommend: []
+          })
+        } else {
+          this.setState({
+            recommend: res.rec
+          })
+        }
       })
     });
   }
