@@ -1,6 +1,6 @@
 import React from 'react'
 import { forwardRef } from 'react'
-import { Paper, Tabs, Tab, Box, TextField, Button } from '@material-ui/core'
+import { Paper, Tabs, Tab, Box, TextField, Button, CircularProgress } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core'
 import { userLogin, userReg } from '../api/api';
 
@@ -47,6 +47,18 @@ const useStyles = makeStyles((theme) => ({
     button: {
         marginTop: 16,
         marginLeft: 16
+    },
+    buttonProgress: {
+        color: 'white',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -4,
+        marginLeft: -4,
+    },
+    wrapper: {
+        position: 'relative',
+        display: 'inline-block'
     }
 }))
 
@@ -170,15 +182,19 @@ function AccountDialog(props, ref) {
                         >
                             关闭
                         </Button>
-                        <Button
-                            className={classes.button}
-                            onClick={handleLogin}
-                            disabled={loading}
-                            variant="contained"
-                            color="primary"
-                        >
-                            登录
-                        </Button>
+
+                        <div className={classes.wrapper}>
+                            <Button
+                                className={classes.button}
+                                onClick={handleLogin}
+                                disabled={loading}
+                                variant="contained"
+                                color="primary"
+                            >
+                                登录
+                            </Button>
+                            {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </div>
                     
                 </form>
@@ -229,15 +245,18 @@ function AccountDialog(props, ref) {
                         >
                             关闭
                         </Button>
-                        <Button
-                            className={classes.button}
-                            onClick={handleReg}
-                            disabled={loading}
-                            variant="contained"
-                            color="secondary"
-                        >
-                            注册
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                className={classes.button}
+                                onClick={handleReg}
+                                disabled={loading}
+                                variant="contained"
+                                color="secondary"
+                            >
+                                注册
+                            </Button>
+                            {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </div>
                     
                 </form>

@@ -1,6 +1,6 @@
 import request from './fetch_helper'
 import md5 from 'md5'
-import { movieSourcesC2E, movieCountryC2E } from './data'
+import { movieSourcesC2E, movieSourcesE2C, movieCountryC2E } from './data'
 
 function setMovieCover(item) {
     if (item.source.douban?.cover ?? false) {
@@ -8,6 +8,51 @@ function setMovieCover(item) {
     } else {
         item.cover = Object.keys(item.source)[0].cover
     }
+}
+
+function setMovieSource(item) {
+    var src = []
+    if (item.source) {
+        Object.keys(item.source).forEach(k => src.push(movieSourcesE2C[k]))
+    }
+    item.src = src.join(', ')
+}
+
+function setMovieRating(item) {
+    const ratings = []
+    const weights = []
+    var totalW = 0
+    
+    if (item.source) {
+        Object.keys(item.source).forEach(k => {
+            if (item.source[k].rating) {
+                var rating = parseFloat(item.source[k].rating)
+                if (isNaN(rating)) {
+                    return
+                }
+                ratings.push(rating)
+                if (item.source[k].rateNum) {
+                    weights.push(item.source[k].rateNum)
+                } else {
+                    weights.push(1)
+                }
+            }
+        })
+    }
+
+    weights.forEach(v => totalW += v)
+    // 防止被0除
+    if (totalW === 0) {
+        totalW = 1
+    }
+
+    // 计算加权平均分
+    var total = 0.0
+    
+    ratings.forEach((v, i) => {
+        total += v * ( weights[i] / totalW )
+    })
+    item.rating = total.toFixed(1)
 }
 
 export function search(data, order, offset, mode, callback) {
@@ -30,7 +75,11 @@ export function search(data, order, offset, mode, callback) {
         }
     }).then(res => {
         if (res.data) {
-            res.data.forEach(item => setMovieCover(item))
+            res.data.forEach(item => {
+                setMovieCover(item)
+                setMovieSource(item)
+                setMovieRating(item)
+            })
         }
         callback(res)
     })
@@ -43,6 +92,8 @@ export function movieDetail(id, callback) {
     }).then(res => {
         if (res.data) {
             setMovieCover(res.data)
+            setMovieSource(res.data)
+            setMovieRating(res.data)
         }
         callback(res)
     })

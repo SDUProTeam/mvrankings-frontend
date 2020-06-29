@@ -109,7 +109,7 @@ class DetailPage extends React.Component {
             variant="body1"
             component="span"
           >
-            {value}
+            {value.split('\n').map((line, i) => (<Typography key={`rating-${i}`} component="p" variant="body1">{line}</Typography>))}
           </Typography>
         </div>
       </Grid>
@@ -224,11 +224,10 @@ class DetailPage extends React.Component {
                 {this.buildInfoLine("外文名称", item.nameFrn ?? "")}
                 {this.buildInfoLine(
                   "评分",
-                  `${item.rating ?? 0} (${item.rateNum ?? 0}次)`
-                )}
-                {this.buildInfoLine(
-                  "数据来源",
-                  `${movieSourcesE2C[item.source ?? ""] ?? ""}`
+                  Object.keys(item?.source ?? {}).map(k => {
+                    const src = item.source[k]
+                    return `${movieSourcesE2C[k]}：${src.rating ?? 0} (${src.rateNum ?? 0}次)`
+                  }).join('\n')
                 )}
                 {this.buildInfoLine("类型", (item.types ?? []).join(" / "))}
                 {this.buildInfoLine("区域", (item.country ?? []).join(" / "))}

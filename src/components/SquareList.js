@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom'
 import MovieRate from './MovieRate'
-import { movieSources } from '../api/data'
 
 const useStyles = makeStyles((theme) => ({
     cover: {
@@ -170,7 +169,7 @@ class CardItem extends React.Component {
                                     上映时间：<span style={{fontWeight: 'bold'}}>{(item.releaseDate ?? []).join(',')}</span>
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="div" noWrap>
-                                    来源：<span style={{fontWeight: 'bold'}}>{movieSources[item.source] ?? ''}</span>
+                                    来源：<span style={{fontWeight: 'bold'}}>{item.src ?? ''}</span>
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
@@ -236,7 +235,7 @@ function MobileCardItem(props) {
                                     <span>上映时间：</span><span style={{fontWeight: 'bold'}}>{(item.releaseDate ?? []).join(',')}</span>
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="div" noWrap>
-                                    <span>来源：</span><span style={{fontWeight: 'bold'}}>{movieSources[item.source] ?? ''}</span>
+                                    <span>来源：</span><span style={{fontWeight: 'bold'}}>{item.src ?? ''}</span>
                                 </Typography>
                             </CardContent>
                         </div>
