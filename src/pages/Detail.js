@@ -32,8 +32,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4
   },
   recItemName: {
-    flex: 1,
-    padding: 8
+    padding: '0 8px'
   }
 }))
 
@@ -46,7 +45,11 @@ function RecommendItem(props) {
           <Link to={'/detail/' + props.item.movieId} style={{ textDecoration: 'none' }}>
             <div className={classes.recItem}>
               <img className={classes.recItemCover} src={props.item.cover} alt={props.item.name}></img>
-              <Typography variant="subtitle1" className={classes.recItemName} color="textPrimary" noWrap>{props.item.name}</Typography>
+              <div style={{ maxWidth: 'calc(100% - 80px - 30px)', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <Typography variant="subtitle1" className={classes.recItemName} color="textPrimary" noWrap>{props.item.name}</Typography>
+                <Typography variant="body2" className={classes.recItemName} color="textSecondary" noWrap>{(props.item.types ?? []).join(' / ')}</Typography>
+              </div>
+
               <MovieRate rate={props.item.rating} mobile={true}/>
             </div>
           </Link>

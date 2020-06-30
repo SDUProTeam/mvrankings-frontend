@@ -204,3 +204,19 @@ export function userHistory(callback) {
         callback(res)
     })
 }
+
+export function personalize(callback) {
+    request({
+        url: '/api/question',
+        method: 'get'
+    }).then(res => {
+        if (res.result && res.result[0] && res.result[0].source) {
+            res.result.forEach(item => {
+                if (item) {
+                    setMovieCover(item)
+                }
+            })
+        }
+        callback(res)
+    })
+}

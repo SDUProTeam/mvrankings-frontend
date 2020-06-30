@@ -27,3 +27,18 @@ export const movieCountryC2E = {
     '日本': '日本',
     '其他': ''
 }
+
+export const personalizeTags = [
+  'country', 'types', 'stars', 'movies'
+]
+
+export const personalizeTagsE2C = [
+  '国家/地区', '类型', '明星', '影片'
+]
+
+export const defaultPersonalizeQues = [
+  {
+    title: '个性化推荐',
+    content: '接下来将会向您询问一些问题，并生成您的个性化推荐。请根据您的喜好进行选择，完成后点击“下一项”即可。'
+  }, {}, {}, {}, {}
+]
