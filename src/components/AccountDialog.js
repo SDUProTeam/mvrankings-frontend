@@ -3,6 +3,7 @@ import { forwardRef } from 'react'
 import { Paper, Tabs, Tab, Box, TextField, Button, CircularProgress } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core'
 import { userLogin, userReg } from '../api/api';
+import { withRouter } from 'react-router';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -62,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-function AccountDialog(props, ref) {
+function AccountDialog(props) {
     const [value, setValue] = React.useState(0)
     const [loading, setLoading] = React.useState(false)
     const [formData, setFormData] = React.useState({
@@ -129,12 +130,15 @@ function AccountDialog(props, ref) {
                 handleClose()
                 props.loginState.loginChange()
                 alert('注册成功')
+
+                // Feature: 跳转到个性化推荐页面
+                props.history.push('/personalize')
             } else {
                 alert(res.msg)
             }
         })
     }
-    
+
 
     return (
         <Paper className={classes.root}>
@@ -266,4 +270,10 @@ function AccountDialog(props, ref) {
     )
 }
 
-export default forwardRef(AccountDialog)
+const AccountDialogWithRouter = withRouter(AccountDialog)
+
+function AccountDialogWithRef(props, ref) {
+    return (<AccountDialogWithRouter {...props}/>)
+}
+
+export default forwardRef(AccountDialogWithRef)
