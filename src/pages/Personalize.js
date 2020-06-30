@@ -21,6 +21,7 @@ import {
 } from "../api/data";
 import SelectableButton from "../components/SelectableButton";
 import { withRouter } from "react-router";
+import SquareList from "../components/SquareList";
 
 class Personalize extends React.Component {
   constructor(props) {
@@ -31,18 +32,20 @@ class Personalize extends React.Component {
       loading: false,
       data: [[], [], [], [], []],
       ques: defaultPersonalizeQues,
+      showResult: false,
+      result: [],
     };
 
     this.buildChild = this.buildChild.bind(this);
     this.setLoading = this.setLoading.bind(this);
     this.handleStep = this.handleStep.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.buildCheckBoxArea = this.buildCheckBoxArea.bind(this);
+    this.buildResult = this.buildResult.bind(this)
   }
 
   componentDidMount() {
-    personalizeTags.forEach((v) => cookie.remove(v,
-      {path: '/'}));
+    personalizeTags.forEach((v) => cookie.remove(v, { path: "/" }));
   }
 
   setLoading(b) {
@@ -132,13 +135,13 @@ class Personalize extends React.Component {
       // 储存当前所选结果
       if (this.state.curStep !== 0) {
         if (this.state.data[this.state.curStep].length === 0) {
-          alert('请至少选择一项')
-          return
+          alert("请至少选择一项");
+          return;
         }
         cookie.save(
           personalizeTags[this.state.curStep - 1],
           this.state.data[this.state.curStep].join(","),
-          {path: '/'}
+          { path: "/" }
         );
       }
 
@@ -162,8 +165,7 @@ class Personalize extends React.Component {
       });
     } else {
       // 恢复上一个问题
-      cookie.remove(personalizeTags[this.state.curStep - 1],
-        {path: '/'});
+      cookie.remove(personalizeTags[this.state.curStep - 1], { path: "/" });
 
       this.setState((state, props) => {
         const oldData = state.data;
@@ -178,26 +180,31 @@ class Personalize extends React.Component {
 
   handleSubmit() {
     if (this.state.data[this.state.curStep].length === 0) {
-      alert('请至少选择一项')
-      return
+      alert("请至少选择一项");
+      return;
     }
     cookie.save(
       personalizeTags[this.state.curStep - 1],
       this.state.data[this.state.curStep].join(","),
-      {path: '/'}
+      { path: "/" }
     );
-    this.setLoading(true)
-    
+    this.setLoading(true);
+
     personalize((res) => {
       if (res.success) {
-        alert('提交成功')
-        this.props.history.replace("/")
+        personalizeTags.forEach((v) => cookie.remove(v, { path: "/" }));
+
+        // 展示推荐结果
+        this.setState({
+          showResult: true,
+          result: res.result,
+        });
+        
       } else {
-        alert('提交失败\n' + res.err)
+        alert("提交失败\n" + res.err);
       }
       this.setLoading(false);
     });
-
   }
 
   buildChild() {
@@ -259,10 +266,26 @@ class Personalize extends React.Component {
     );
   }
 
+  buildResult() {
+    return (
+      <Card>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            推荐结果
+          </Typography>
+          <div style={{ height: 16 }}></div>
+          <SquareList data={{data: this.state.result}} loading={false} handleClick={(history, id) => {history.replace('/detail/' + id)}} />
+        </CardContent>
+      </Card>
+    )
+  }
+
   render() {
     return (
       <TopBar mode={3} loginState={this.props.loginState}>
-        {this.props.loginState.data.login
+        {this.state.showResult
+          ? this.buildResult()
+          : this.props.loginState.data.login
           ? this.buildChild()
           : this.buildLoginPage()}
       </TopBar>
