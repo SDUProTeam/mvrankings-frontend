@@ -25,6 +25,9 @@ function setMovieRating(item) {
     
     if (item.source) {
         Object.keys(item.source).forEach(k => {
+            if (typeof(item.source[k].rateNum) === 'string') {
+                item.source[k].rateNum = parseInt(item.source[k].rateNum)
+            }
             if (!item.source[k].rating || item.source[k].rating.trim().length === 0 || item.source[k].rating === '0' || item.source[k].rating === '0.0') {
                 item.source[k].rating = undefined
             }
