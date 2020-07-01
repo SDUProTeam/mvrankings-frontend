@@ -214,6 +214,8 @@ export function personalize(callback) {
             res.result.forEach(item => {
                 if (item) {
                     setMovieCover(item)
+                    setMovieRating(item)
+                    setMovieSource(item)
                 }
             })
         }
