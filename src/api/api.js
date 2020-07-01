@@ -117,6 +117,18 @@ export function movieComments(id, callback) {
     })
 }
 
+export function userComment(rating, content, callback) {
+    request({
+        url: '/api/comment',
+        method: 'POST',
+        data: {
+            content: content
+        }
+    }).then(res => {
+        callback(res)
+    })
+}
+
 export function recommendMovies(callback) {
     request({
         url: '/api/recommend',

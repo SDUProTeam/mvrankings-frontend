@@ -16,6 +16,7 @@ import {
 import { Rating } from '@material-ui/lab'
 import MovieRate from "../components/MovieRate";
 import { movieSourcesE2C } from '../api/data'
+import CommentArea from "../components/CommentArea";
 
 const useStyles = makeStyles((theme) => ({
   recItemRoot: {
@@ -322,7 +323,7 @@ class DetailPage extends React.Component {
                 {this.buildInfoLine("片长", item.runtime ?? "")}
                 {this.buildInfoLine(
                   "上映日期",
-                  (item.releaseDate ?? []).join(" / ")
+                  (item.releaseDate ?? []).join("\n")
                 )}
                 {this.buildInfoLine("语言", (item.language ?? []).join(" / "))}
                 {item.imdb === undefined
@@ -357,6 +358,9 @@ class DetailPage extends React.Component {
             {this.buildInfoBlock(
               "评论",
               <>
+                <div style={{ padding: 16, width: '100%' }}>
+                  <CommentArea id={item.movieId} loginState={this.props.loginState}/>
+                </div>
                 {item.comments
                   ? (item.comments.length === 0
                       ? this.buildInfoLine("没有评论", "")
