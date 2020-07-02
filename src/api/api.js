@@ -117,11 +117,13 @@ export function movieComments(id, callback) {
     })
 }
 
-export function userComment(rating, content, callback) {
+export function userComment(id, rating, content, callback) {
     request({
         url: '/api/comment',
         method: 'POST',
         data: {
+            movieId: id,
+            rating: rating,
             content: content
         }
     }).then(res => {

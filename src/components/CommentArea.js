@@ -5,7 +5,7 @@ import { userComment } from '../api/api'
 import { withRouter } from 'react-router'
 
 function CommentArea(props) {
-    const [rating, setRating] = React.useState(7.0)
+    const [rating, setRating] = React.useState(0.0)
     const [ratingHover, setRatingHover] = React.useState(-1)
     const [comment, setComment] = React.useState('')
     
@@ -13,17 +13,21 @@ function CommentArea(props) {
     const commentMinLen = 10
 
     const handleSubmit = () => {
-        if (comment.trim().length < commentMinLen) {
-            alert('评论不能少于' + commentMinLen + '字')
+        if (rating === 0.0) {
+            alert('请先评分')
         } else {
-            userComment(rating, comment, res => {
-                if (res.success) {
-                    alert('评论成功')
-                    props.history.replace('/detail/' + props.id)
-                } else {
-                    alert('评论失败\n' + res.err)
-                }
-            })
+            if (comment.trim().length < commentMinLen) {
+                alert('评论不能少于' + commentMinLen + '字')
+            } else {
+                userComment(props.id, rating, comment, res => {
+                    if (res.success) {
+                        alert('评论成功')
+                        props.history.replace('/detail/' + props.id)
+                    } else {
+                        alert('评论失败\n' + res.err)
+                    }
+                })
+            }
         }
     }
 
